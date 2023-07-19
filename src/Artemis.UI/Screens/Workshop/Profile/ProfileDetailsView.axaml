@@ -3,19 +3,88 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:profile="clr-namespace:Artemis.UI.Screens.Workshop.Profile"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:entries="clr-namespace:Artemis.UI.Screens.Workshop.Entries"
+             xmlns:converters="clr-namespace:Artemis.UI.Shared.Converters;assembly=Artemis.UI.Shared"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
              x:Class="Artemis.UI.Screens.Workshop.Profile.ProfileDetailsView"
              x:DataType="profile:ProfileDetailsViewModel">
+    <UserControl.Resources>
+        <converters:HumanizerConverter x:Key="HumanizerConverter" />
+    </UserControl.Resources>
     <Border Classes="router-container">
-        <Grid ColumnDefinitions="300,*" RowDefinitions="Auto,*" Margin="10">
-            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" >
-                <TextBlock Text="{CompiledBinding Entry.Name, FallbackValue=Profile}" Classes="h3 no-margin"/>
-                <TextBlock Text="{CompiledBinding Entry.Author, FallbackValue=Author}" Classes="subtitle" Margin="0 0 0 5"/>
+        <Grid ColumnDefinitions="300,*" Margin="10">
+            <StackPanel Grid.Column="0" Margin="0 0 10 0">
+                <Border Classes="card-condensed">
+                    <!-- details -->
+                    <StackPanel Margin="15">
+                            <Border
+                                Cursor="Hand"
+                                CornerRadius="12"
+                                Background="{StaticResource ControlStrokeColorOnAccentDefault}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Margin="0 0 10 0"
+                                Width="120"
+                                Height="120">
+                                <avalonia:MaterialIcon
+                                    Kind="HandOkay"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalAlignment="Stretch"
+                                    Width="100"
+                                    Height="100" />
+                            </Border>
+                            <TextBlock Margin="0 5 0 5" Cursor="Hand" TextWrapping="Wrap">
+                                <Run Classes="h3" Text="{CompiledBinding Entry.Name, FallbackValue=Really really long title}" />
+                                <Run Classes="subtitle">by</Run>
+                                <Run Classes="subtitle" Text="{CompiledBinding Entry.Author, FallbackValue=Author}" />
+                            </TextBlock>
+
+                            <TextBlock TextWrapping="Wrap" FontSize="15" Classes="subtitle"
+                                       Text="{CompiledBinding Entry.Summary, FallbackValue=Bacon ipsum dolor amet t-bone leberkas filet mignon chislic pastrami ham venison prosciutto short loin.}">
+                            </TextBlock>
+                            <Border Classes="card-separator" />
+                            
+                            <TextBlock  ToolTip.Tip="{CompiledBinding Entry.CreatedAt, StringFormat={}{0:g}}">
+                                <avalonia:MaterialIcon Kind="Calendar"/>
+                                <Run Text="Created" />
+                                <Run Text="{CompiledBinding Entry.CreatedAt, FallbackValue=5 hours ago, Converter={StaticResource HumanizerConverter}}" />
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,10,0,0">
+                                <avalonia:MaterialIcon Kind="Downloads" />
+                                <Run Text="Downloaded" />
+                                <Run Text="{CompiledBinding Entry.Downloads, FallbackValue=12345678}" />
+                                <Run Text="times" />
+                            </TextBlock>
+                            
+                            <Border Classes="card-separator" />
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                    <Button Margin="0,10">
+                                        <TextBlock Text="Install"/>
+                                    </Button>
+                                <Button Margin="0,10" HorizontalAlignment="Stretch">
+                                    <TextBlock Text="Report"/>
+                                </Button>
+                            </StackPanel>
+                            
+
+
+                        </StackPanel>
+                </Border>
+                
+
+                <Border Classes="card-condensed" >
+                    <!-- releases -->
+                    <StackPanel Margin="15,5,15,15">
+                        <TextBlock Classes="h4" Text="Releases" />
+                        <TextBlock Text="todo"/>
+
+                    </StackPanel>
+                </Border>
+
             </StackPanel>
-        
-            <Border Classes="card-condensed" Grid.Row="1" Grid.Column="0" Margin="0 0 10 0">
-                <TextBlock>Side panel</TextBlock>
-            </Border>
 
             <Border Classes="card-condensed" Grid.Row="1" Grid.Column="1">
                 <TextBlock>Profile details panel</TextBlock>

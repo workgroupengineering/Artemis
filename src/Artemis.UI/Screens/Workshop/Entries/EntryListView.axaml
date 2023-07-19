@@ -8,8 +8,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="120"
              x:Class="Artemis.UI.Screens.Workshop.Entries.EntryListView"
              x:DataType="entries1:EntryListViewModel">
-    <Border Classes="card" MinHeight="120">
-        <Grid ColumnDefinitions="Auto,*,Auto">
+    <Border Classes="card" MinHeight="120" PointerReleased="InputElement_OnPointerReleased">
+        <Grid ColumnDefinitions="Auto,*,Auto" >
             <Border Grid.Column="0"
                     Cursor="Hand"
                     CornerRadius="12"
@@ -17,14 +17,13 @@
                     VerticalAlignment="Center"
                     Margin="0 0 10 0"
                     Width="90"
-                    Height="90" 
-                    PointerReleased="InputElement_OnPointerReleased">
+                    Height="90" >
                 <avalonia:MaterialIcon Kind="HandOkay" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="80" Height="80"/>
             </Border>
 
 
             <Grid Grid.Column="1" VerticalAlignment="Stretch" RowDefinitions="Auto,*,Auto">
-                <TextBlock Grid.Row="0" Margin="0 0 0 5" Cursor="Hand" PointerReleased="InputElement_OnPointerReleased">
+                <TextBlock Grid.Row="0" Margin="0 0 0 5" Cursor="Hand">
                     <Run Classes="h4" Text="{CompiledBinding Entry.Name, FallbackValue=Title}" />
                     <Run Classes="subtitle">by</Run>
                     <Run Classes="subtitle" Text="{CompiledBinding Entry.Author, FallbackValue=Author}" />

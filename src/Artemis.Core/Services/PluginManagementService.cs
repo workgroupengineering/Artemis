@@ -794,18 +794,18 @@ internal class PluginManagementService : IPluginManagementService
         {
             Type = "DeletePlugin",
             CreatedAt = DateTimeOffset.Now,
-            Parameters = new Dictionary<string, object>
+            Parameters = new List<QueuedActionParameterEntity>
             {
-                {"pluginGuid", plugin.Guid.ToString()},
-                {"plugin", plugin.ToString()},
-                {"directory", plugin.Directory.FullName}
+                new("pluginGuid", plugin.Guid.ToString()),
+                new("plugin", plugin.ToString()),
+                new("directory", plugin.Directory.FullName)
             }
         });
     }
 
     public void DequeuePluginDeletion(Plugin plugin)
     {
-        QueuedActionEntity? queuedActionEntity = _queuedActionRepository.GetByType("DeletePlugin").FirstOrDefault(q => q.Parameters["pluginGuid"].Equals(plugin.Guid.ToString()));
+        QueuedActionEntity? queuedActionEntity = _queuedActionRepository.GetByType("DeletePlugin").FirstOrDefault(q => q.GetParameter("pluginGuid") == plugin.Guid.ToString());
         if (queuedActionEntity != null)
             _queuedActionRepository.Remove(queuedActionEntity);
     }
@@ -814,24 +814,24 @@ internal class PluginManagementService : IPluginManagementService
     {
         foreach (QueuedActionEntity queuedActionEntity in _queuedActionRepository.GetByType("DeletePlugin"))
         {
-            string? directory = queuedActionEntity.Parameters["directory"].ToString();
+            string? directory = queuedActionEntity.GetParameter("directory");
             try
             {
                 if (Directory.Exists(directory))
                 {
-                    _logger.Information("Queued plugin deletion - deleting folder - {plugin}", queuedActionEntity.Parameters["plugin"]);
+                    _logger.Information("Queued plugin deletion - deleting folder - {plugin}", queuedActionEntity.GetParameter("plugin"));
                     Directory.Delete(directory!, true);
                 }
                 else
                 {
-                    _logger.Information("Queued plugin deletion - folder already deleted - {plugin}", queuedActionEntity.Parameters["plugin"]);
+                    _logger.Information("Queued plugin deletion - folder already deleted - {plugin}", queuedActionEntity.GetParameter("plugin"));
                 }
 
                 _queuedActionRepository.Remove(queuedActionEntity);
             }
             catch (Exception e)
             {
-                _logger.Warning(e, "Queued plugin deletion failed - {plugin}", queuedActionEntity.Parameters["plugin"]);
+                _logger.Warning(e, "Queued plugin deletion failed - {plugin}", queuedActionEntity.GetParameter("plugin"));
             }
         }
     }

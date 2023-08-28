@@ -4,7 +4,6 @@ using System.Reflection;
 using Artemis.Core.DryIoc.Factories;
 using Artemis.Core.Services;
 using Artemis.Storage;
-using Artemis.Storage.Migrations.Interfaces;
 using Artemis.Storage.Repositories.Interfaces;
 using DryIoc;
 
@@ -22,19 +21,10 @@ public static class ContainerExtensions
     public static void RegisterCore(this IContainer container)
     {
         Assembly[] coreAssembly = {typeof(IArtemisService).Assembly};
-        Assembly[] storageAssembly = {typeof(IRepository).Assembly};
-
+        
         // Bind all services as singletons
         container.RegisterMany(coreAssembly, type => type.IsAssignableTo<IArtemisService>(), Reuse.Singleton);
         container.RegisterMany(coreAssembly, type => type.IsAssignableTo<IProtectedArtemisService>(), Reuse.Singleton, setup: Setup.With(condition: HasAccessToProtectedService));
-
-        // Bind storage
-        container.RegisterDelegate(() => StorageManager.CreateRepository(Constants.DataFolder), Reuse.Singleton);
-        container.Register<StorageMigrationService>(Reuse.Singleton);
-        container.RegisterMany(storageAssembly, type => type.IsAssignableTo<IRepository>(), Reuse.Singleton);
-
-        // Bind migrations
-        container.RegisterMany(storageAssembly, type => type.IsAssignableTo<IStorageMigration>(), Reuse.Singleton, nonPublicServiceTypes: true);
 
         container.Register<IPluginSettingsFactory, PluginSettingsFactory>(Reuse.Singleton);
         container.Register(Made.Of(_ => ServiceInfo.Of<IPluginSettingsFactory>(), f => f.CreatePluginSettings(Arg.Index<Type>(0)), r => r.Parent.ImplementationType));

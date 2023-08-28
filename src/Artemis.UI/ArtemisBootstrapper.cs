@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Reactive;
 using Artemis.Core;
 using Artemis.Core.DryIoc;
+using Artemis.Storage.DryIoc;
 using Artemis.UI.DryIoc;
 using Artemis.UI.Exceptions;
 using Artemis.UI.Screens.Root;
@@ -44,6 +45,7 @@ public static class ArtemisBootstrapper
             .WithoutThrowOnRegisteringDisposableTransient());
 
         _container.RegisterCore();
+        _container.RegisterStorage(Constants.DataFolder);
         _container.RegisterUI();
         _container.RegisterSharedUI();
         _container.RegisterUpdatingClient();
